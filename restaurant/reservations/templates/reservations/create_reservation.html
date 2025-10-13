@@ -1,7 +1,141 @@
-<h2>Nuova Prenotazione</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Prenota</button>
-</form>
-<a href="{% url 'home' %}">Torna alla home</a>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuova Prenotazione</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="date"],
+        input[type="time"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .errorlist {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0;
+        }
+        .errorlist li {
+            color: #dc3545;
+            font-size: 14px;
+        }
+        .non-field-errors {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 10px 5px 0 0;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Nuova Prenotazione</h2>
+    
+    <div class="form-container">
+        <form method="post">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="non-field-errors">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+            
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    {{ field.errors }}
+                {% endif %}
+                {% if field.help_text %}
+                <div class="help-text">{{ field.help_text }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+            <div>
+                <button type="submit" class="btn btn-primary">Prenota</button>
+                <a href="{% url 'home' %}" class="btn btn-secondary">Annulla</a>
+            </div>
+        </form>
+        
+        <div class="help-text" style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
+            <strong>Informazioni:</strong>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+                <li>Il ristorante è aperto dalle 18:00 alle 22:00</li>
+                <li>Numero massimo di ospiti per prenotazione: 20</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
