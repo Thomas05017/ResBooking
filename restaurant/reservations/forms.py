@@ -2,6 +2,24 @@ from django import forms
 from django.core.exceptions import ValidationError
 from .models import Reservation
 from datetime import date, time, datetime
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+class RegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Email'
+    }))
+    
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}),
+            'password1': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}),
+            'password2': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Conferma Password'}),
+        }
+
 
 class ReservationForm(forms.ModelForm):
     OPENING_TIME = time(hour=18, minute=0)
@@ -26,7 +44,7 @@ class ReservationForm(forms.ModelForm):
             'time': forms.TimeInput(attrs={
                 'type': 'time',
                 'class': 'form-control',
-                'step': '1800'  # Intervalli di 30 minuti
+                'step': '3600'  # Intervalli di 1 ora
             }),
             'guests': forms.NumberInput(attrs={
                 'class': 'form-control',
@@ -77,49 +95,5 @@ class ReservationForm(forms.ModelForm):
         return reservation_time
 
     def clean(self):
-        cleaned_data = super().clean()
-        reservation_date = cleaned_data.get('date')
-        reservation_time = cleaned_data.get('time')
-        reservation_guests = cleaned_data.get('guests')
-
-        if reservation_date and reservation_time and reservation_guests:
-            user_has_reservation = Reservation.objects.filter(
-                user=self.instance.user if hasattr(self.instance, 'user') else None,
-                date=reservation_date,
-                time=reservation_time
-            )
-            
-            if self.instance.pk:
-                user_has_reservation = user_has_reservation.exclude(pk=self.instance.pk)
-            
-            if user_has_reservation.exists():
-                raise ValidationError(
-                    "Hai già una prenotazione per questa data e orario. "
-                    "Non puoi prenotare due volte nello stesso slot."
-                )
-            
-            existing_reservations = Reservation.objects.filter(
-                date=reservation_date,
-                time=reservation_time
-            )
-            
-            if self.instance.pk:
-                existing_reservations = existing_reservations.exclude(pk=self.instance.pk)
-            
-            total_guests = sum(r.guests for r in existing_reservations) + reservation_guests
-            
-            if total_guests > self.MAX_CAPACITY:
-                available_seats = self.MAX_CAPACITY - sum(r.guests for r in existing_reservations)
-                if available_seats > 0:
-                    raise ValidationError(
-                        f"Siamo quasi al completo per quest'orario. "
-                        f"Posti disponibili: {available_seats}. "
-                        f"Prova un altro slot o una data diversa."
-                    )
-                else:
-                    raise ValidationError(
-                        "Siamo al completo per quest'orario. "
-                        "Prova un altro slot o una data diversa."
-                    )
-        
+        cleaned_data = super().clean() 
         return cleaned_data

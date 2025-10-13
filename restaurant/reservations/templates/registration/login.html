@@ -72,11 +72,9 @@
         button[type="submit"]:hover {
             background-color: #0056b3;
         }
-        .help-text {
+        .register-link {
+            margin-top: 1rem;
             text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #666;
         }
     </style>
 </head>
@@ -108,8 +106,8 @@
             <button type="submit">Accedi</button>
         </form>
         
-        <div class="help-text">
-            <p>Benvenuto nel sistema di prenotazioni del ristorante</p>
+        <div class="register-link">
+            <p>Non hai un account? <a href="{% url 'register' %}">Registrati</a></p>
         </div>
     </div>
 </body>
