@@ -5,6 +5,8 @@ from .forms import RegistrationForm
 from .forms import ReservationForm
 from .models import Reservation
 from django.contrib.auth import login
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseForbidden
 
 def register(request):
     if request.method == 'POST':
@@ -24,18 +26,15 @@ def register(request):
 
 @login_required
 def home(request):
-    prenotazioni = Reservation.objects.filter(user=request.user).order_by('date', 'time')
-    context = {
-        'prenotazioni': [
-            {
-                'data': p.date,
-                'ora': p.time,
-                'numero_persone': p.guests
-            }
-            for p in prenotazioni
-        ]
-    }
-    return render(request, 'reservations/home.html', context)
+    if request.user.is_staff:
+        prenotazioni = Reservation.objects.all().order_by('date', 'time')
+    else:
+        prenotazioni = Reservation.objects.filter(user=request.user).order_by('date', 'time')
+
+    return render(request, 'reservations/home.html', {
+        'prenotazioni': prenotazioni
+    })
+
 
 @login_required
 def create_reservation(request):
@@ -54,3 +53,25 @@ def create_reservation(request):
         form = ReservationForm()
 
     return render(request, 'reservations/create_reservation.html', {'form': form})
+
+
+@login_required
+def delete_reservation(request, reservation_id):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("Non hai i permessi per eliminare questa prenotazione.")
+    
+    reservation = get_object_or_404(Reservation, id=reservation_id)
+    reservation.delete()
+    messages.success(request, 'Prenotazione eliminata con successo.')
+    return redirect('home')
+
+@login_required
+def confirm_reservation(request, reservation_id):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("Non hai i permessi per confermare questa prenotazione.")
+    
+    reservation = get_object_or_404(Reservation, id=reservation_id)
+    reservation.confirmed = True
+    reservation.save()
+    messages.success(request, 'Prenotazione confermata.')
+    return redirect('home')

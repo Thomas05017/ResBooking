@@ -95,5 +95,5 @@ class ReservationForm(forms.ModelForm):
         return reservation_time
 
     def clean(self):
-        cleaned_data = super().clean() 
+        cleaned_data = super().clean()
         return cleaned_data

@@ -7,6 +7,7 @@ class Reservation(models.Model):
     date = models.DateField()
     time = models.TimeField()
     guests = models.IntegerField()
+    confirmed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
