@@ -1,0 +1,7 @@
+<h2>Nuova Prenotazione</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Prenota</button>
+</form>
+<a href="{% url 'home' %}">Torna alla home</a>

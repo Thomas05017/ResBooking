@@ -1,0 +1,10 @@
+<h2>Le tue prenotazioni</h2>
+<a href="{% url 'nuova_prenotazione' %}">Nuova prenotazione</a>
+<ul>
+  {% for p in prenotazioni %}
+    <li>{{ p.data }} - {{ p.ora }} - {{ p.numero_persone }} persone</li>
+  {% empty %}
+    <li>Nessuna prenotazione trovata.</li>
+  {% endfor %}
+</ul>
+<a href="{% url 'logout' %}">Logout</a>
