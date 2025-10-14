@@ -13,7 +13,7 @@
             <div class="page-header">
                 <h2>🍽️ Le Tue Prenotazioni</h2>
                 <div class="action-buttons">
-                    <a href="{% url 'nuova_prenotazione' %}" class="btn btn-primary">+ Nuova Prenotazione</a>
+                    <a href="{% url 'nuova_prenotazione' %}" class="nuova-prenotazione btn btn-primary">+ Nuova Prenotazione</a>
                     <form method="post" action="{% url 'logout' %}" class="logout-form">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-secondary">Esci</button>

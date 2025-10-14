@@ -374,6 +374,10 @@ a:hover {
     text-decoration: underline;
 }
 
+a.nuova-prenotazione:hover {
+    color: rgb(228, 237, 255);
+}
+
 .auth-link {
     text-align: center;
     margin-top: 25px;
