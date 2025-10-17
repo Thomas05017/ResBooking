@@ -24,8 +24,8 @@ class RegistrationForm(UserCreationForm):
 class ReservationForm(forms.ModelForm):
     OPENING_TIME = time(hour=18, minute=0)
     CLOSING_TIME = time(hour=22, minute=0)
-    MAX_CAPACITY = 50
     MIN_GUESTS = 1
+    MAX_GUESTS = 20
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -74,7 +74,10 @@ class ReservationForm(forms.ModelForm):
         
         if guests < self.MIN_GUESTS:
             raise ValidationError(f"Il numero minimo di ospiti è {self.MIN_GUESTS}.")
-              
+        
+        if guests > self.MAX_GUESTS:
+            raise ValidationError(f"Il numero massimo di ospiti per prenotazione è {self.MAX_GUESTS}.")
+        
         return guests
 
     def clean_time(self):
